@@ -15,6 +15,8 @@ class CVInterpreter:
             return ("if", condition)
         elif line.strip() == "thats all":
             return ("end_if", None)
+        elif line.strip() == "otherwise then":
+            return ("else", None)
         elif line.startswith("can you say"):
             match = re.match(r'can you say "(.*)"\?', line)
             if match:
@@ -42,12 +44,20 @@ class CVInterpreter:
                     condition = arg
                     if self.evaluate_condition(condition):
                         i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
+                        while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then"]:
                             self.run_line(lines[i])
                             i += 1
+                        if i < len(lines) and lines[i].strip() == "otherwise then":
+                            while i < len(lines) and lines[i].strip() != "thats all":
+                                i += 1
                     else:
-                        while i < len(lines) and lines[i].strip() != "thats all":
+                        while i < len(lines) and lines[i].strip() != "otherwise then":
                             i += 1
+                        if i < len(lines) and lines[i].strip() == "otherwise then":
+                            i += 1
+                            while i < len(lines) and lines[i].strip() != "thats all":
+                                self.run_line(lines[i])
+                                i += 1
                 elif cmd == "end_if":
                     pass
                 elif cmd == "print":
@@ -69,14 +79,15 @@ class CVInterpreter:
         return None
 
 def main():
-    parser = argparse.ArgumentParser(description='run codeversation (CV) code.')
-    parser.add_argument('filename', type=str, help='the filename of the CV code to run')
+    parser = argparse.ArgumentParser(description='Run CodeVersation (CV) code.')
+    parser.add_argument('filename', type=str, help='The filename of the CV code to run')
     args = parser.parse_args()
 
     with open(args.filename, 'r') as file:
         code = file.read()
 
     interpreter = CVInterpreter()
+    print("CV interpreter v1.1")
     interpreter.run(code)
 
 if __name__ == "__main__":
