@@ -2,3 +2,6 @@ a is 2
 if a is 2 then
     can you say "hi"?
     thats all
+otherwise then
+    can you say "bye"?
+    thats all
