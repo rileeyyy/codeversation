@@ -5,14 +5,14 @@ a programming language that looks like a.. conversation
 
 # syntax!!
 declare variables using  
-```[variable] is [value]```
+```[variable] is [value]```  
 if statments!!  
 ```
 if [variable] is [value] then  
       do stuff
    thats all
 ```
-printing to the console!!
+printing to the console!!  
 ```can you say "[whatever]"?```
 
 # how to run the code
