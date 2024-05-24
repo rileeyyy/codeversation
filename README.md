@@ -7,9 +7,11 @@ a programming language that looks like a.. conversation
 declare variables using  
 ```[variable] is [value]```
 if statments!!  
-```if [variable] is [value] then  
+```
+if [variable] is [value] then  
       do stuff
-   thats all```
+   thats all
+```
 printing to the console!!
 ```can you say "[whatever]"?```
 
