@@ -6,10 +6,13 @@ a programming language that looks like a.. conversation
 # syntax!!
 declare variables using  
 ```[variable] is [value]```  
-if statments!!  
+if and else statments!!  
 ```
 if [variable] is [value] then  
-      do stuff
+   do stuff
+   thats all
+otherwise then
+   do stuff
    thats all
 ```
 printing to the console!!  
