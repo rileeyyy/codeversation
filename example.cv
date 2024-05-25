@@ -2,9 +2,6 @@ a is 3
 if a is 2 then
     can you say "hi"?
     thats all
-but if a is 3 then
-    can you say "hello"?
-    thats all
 otherwise then
     can you say "bye"?
     thats all
