@@ -17,9 +17,6 @@ class CVInterpreter:
             return ("end_if", None)
         elif line.strip() == "otherwise then":
             return ("else", None)
-        elif line.startswith("but if ") and " then" in line:
-            condition = line[7:line.index(" then")].strip()
-            return ("elif", condition)
         elif line.startswith("can you say"):
             match = re.match(r'can you say "(.*)"\?', line)
             if match:
@@ -47,34 +44,19 @@ class CVInterpreter:
                     condition = arg
                     if self.evaluate_condition(condition):
                         i += 1
-                        while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then", "but if"]:
+                        while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then"]:
                             self.run_line(lines[i])
                             i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
-                            i += 1
-                    else:
-                        i += 1
-                        while i < len(lines):
-                            line = lines[i].strip()
-                            if line.startswith("but if"):
-                                condition = line[7:line.index(" then")].strip()
-                                if self.evaluate_condition(condition):
-                                    i += 1
-                                    while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then", "but if"]:
-                                        self.run_line(lines[i])
-                                        i += 1
-                                    break
-                                else:
-                                    i += 1
-                            elif line == "otherwise then":
+                        if i < len(lines) and lines[i].strip() == "otherwise then":
+                            while i < len(lines) and lines[i].strip() != "thats all":
                                 i += 1
-                                while i < len(lines) and lines[i].strip() != "thats all":
-                                    self.run_line(lines[i])
-                                    i += 1
-                                break
-                            elif line == "thats all":
-                                break
-                            else:
+                    else:
+                        while i < len(lines) and lines[i].strip() != "otherwise then":
+                            i += 1
+                        if i < len(lines) and lines[i].strip() == "otherwise then":
+                            i += 1
+                            while i < len(lines) and lines[i].strip() != "thats all":
+                                self.run_line(lines[i])
                                 i += 1
                 elif cmd == "end_if":
                     pass
@@ -105,6 +87,7 @@ def main():
         code = file.read()
 
     interpreter = CVInterpreter()
+    print("CV interpreter v1.1")
     interpreter.run(code)
 
 if __name__ == "__main__":
