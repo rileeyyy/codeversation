@@ -4,6 +4,7 @@ import argparse
 class CVInterpreter:
     def __init__(self):
         self.variables = {}
+        self.if_exec = False
 
     def parse_line(self, line):
         line = line.strip()
@@ -25,13 +26,12 @@ class CVInterpreter:
         return None
 
     def evaluate_condition(self, condition):
-     if " is " in condition:
-        var, value = condition.split(" is ")
-        var = var.strip()
-        value = int(value.strip())
-        if var in self.variables:
-            return self.variables[var] == value
-     return False
+        if " is " in condition:
+            var, value = condition.split(" is ")
+            var = var.strip()
+            value = int(value.strip())
+            return self.variables.get(var) == value
+        return False
 
     def run(self, code):
         lines = code.splitlines()
@@ -42,19 +42,19 @@ class CVInterpreter:
             if parsed_line:
                 cmd, arg = parsed_line
                 if cmd == "if":
+                    self.if_exec = False
                     condition = arg
                     if self.evaluate_condition(condition):
+                        self.if_exec = True
                         i += 1
                         while i < len(lines) and lines[i].strip() != "thats all":
                             if lines[i].strip() == "otherwise then":
-                                # Skip the else block
                                 while i < len(lines) and lines[i].strip() != "thats all":
                                     i += 1
                                 break
                             self.run_line(lines[i])
                             i += 1
                     else:
-                        # Skip the if block
                         while i < len(lines) and lines[i].strip() != "otherwise then":
                             i += 1
                         if i < len(lines) and lines[i].strip() == "otherwise then":
@@ -62,6 +62,15 @@ class CVInterpreter:
                             while i < len(lines) and lines[i].strip() != "thats all":
                                 self.run_line(lines[i])
                                 i += 1
+                elif cmd == "else":
+                    if not self.if_exec:
+                        i += 1
+                        while i < len(lines) and lines[i].strip() != "thats all":
+                            self.run_line(lines[i])
+                            i += 1
+                    else:
+                        while i < len(lines) and lines[i].strip() != "thats all":
+                            i += 1
                 elif cmd == "print":
                     print(arg)
             i += 1
@@ -74,8 +83,8 @@ class CVInterpreter:
                 print(arg)
 
 def main():
-    parser = argparse.ArgumentParser(description='Run CodeVersation (CV) code.')
-    parser.add_argument('filename', type=str, help='The filename of the CV code to run')
+    parser = argparse.ArgumentParser(description='run codeversation (CV) code.')
+    parser.add_argument('filename', type=str, help='the filename of the CV code to run')
     args = parser.parse_args()
 
     with open(args.filename, 'r') as file:
