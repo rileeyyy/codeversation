@@ -44,21 +44,20 @@ class CVInterpreter:
                     condition = arg
                     if self.evaluate_condition(condition):
                         i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
-                            if lines[i].strip() == "otherwise then":
-                                while i < len(lines) and lines[i].strip() != "thats all":
-                                    i += 1
-                                break
+                        while i < len(lines) and lines[i].strip() != "thats all" and lines[i].strip() != "otherwise then":
                             self.run_line(lines[i])
                             i += 1
                     else:
-                        while i < len(lines) and lines[i].strip() != "otherwise then":
-                            i += 1
-                        if i < len(lines) and lines[i].strip() == "otherwise then":
-                            i += 1
-                            while i < len(lines) and lines[i].strip() != "thats all":
-                                self.run_line(lines[i])
+                        has_else_block = False
+                        i += 1
+                        while i < len(lines) and lines[i].strip() != "thats all":
+                            if lines[i].strip() == "otherwise then":
+                                has_else_block = True
                                 i += 1
+                                continue
+                            if has_else_block:
+                                self.run_line(lines[i])
+                            i += 1
                 elif cmd == "print":
                     print(arg)
             i += 1
