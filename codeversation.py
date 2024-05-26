@@ -48,15 +48,14 @@ class CVInterpreter:
                             self.run_line(lines[i])
                             i += 1
                     else:
-                        has_else_block = False
                         i += 1
                         while i < len(lines) and lines[i].strip() != "thats all":
                             if lines[i].strip() == "otherwise then":
-                                has_else_block = True
                                 i += 1
-                                continue
-                            if has_else_block:
-                                self.run_line(lines[i])
+                                while i < len(lines) and lines[i].strip() != "thats all":
+                                    self.run_line(lines[i])
+                                    i += 1
+                                break
                             i += 1
                 elif cmd == "print":
                     print(arg)
