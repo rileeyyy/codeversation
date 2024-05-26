@@ -57,6 +57,8 @@ class CVInterpreter:
                             while i < len(lines) and lines[i].strip() != "thats all":
                                 self.run_line(lines[i])
                                 i += 1
+                        while i < len(lines) and lines[i].strip() != "thats all":
+                            i += 1
                 elif cmd == "end_if":
                     pass
                 elif cmd == "print":
@@ -90,4 +92,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
