@@ -35,7 +35,6 @@ class CVInterpreter:
     def run(self, code):
         lines = code.splitlines()
         i = 0
-        if_met = False
         while i < len(lines):
             line = lines[i]
             parsed_line = self.parse_line(line)
@@ -44,24 +43,19 @@ class CVInterpreter:
                 if cmd == "if":
                     condition = arg
                     if self.evaluate_condition(condition):
-                        if_met = True
                         i += 1
-                    else:
-                        if_met = False
-                        while i < len(lines) and lines[i].strip() != "otherwise then" and lines[i].strip() != "thats all":
-                            i += 1
-                        if i < len(lines) and lines[i].strip() == "otherwise then":
-                            i += 1
-                elif cmd == "else":
-                    if not if_met:
-                        i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
+                        while i < len(lines) and lines[i].strip() != "thats all" and not lines[i].strip().startswith("otherwise then"):
                             self.run_line(lines[i])
                             i += 1
                     else:
                         i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
+                        while i < len(lines) and lines[i].strip() != "otherwise then":
                             i += 1
+                elif cmd == "else":
+                    i += 1
+                    while i < len(lines) and lines[i].strip() != "thats all":
+                        self.run_line(lines[i])
+                        i += 1
                 elif cmd == "print":
                     print(arg)
             i += 1
@@ -86,3 +80,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+ 
