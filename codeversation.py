@@ -47,9 +47,8 @@ class CVInterpreter:
                         while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then"]:
                             self.run_line(lines[i])
                             i += 1
-                        if i < len(lines) and lines[i].strip() == "otherwise then":
-                            while i < len(lines) and lines[i].strip() != "thats all":
-                                i += 1
+                        while i < len(lines) and lines[i].strip() != "thats all":
+                            i += 1
                     else:
                         while i < len(lines) and lines[i].strip() != "otherwise then":
                             i += 1
@@ -87,7 +86,6 @@ def main():
         code = file.read()
 
     interpreter = CVInterpreter()
-    print("CV interpreter v1.1")
     interpreter.run(code)
 
 if __name__ == "__main__":
