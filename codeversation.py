@@ -10,6 +10,7 @@ class CVInterpreter:
         if re.match(r"^[a-zA-Z_]\w* is \d+$", line):
             var, value = line.split(" is ")
             self.variables[var.strip()] = int(value.strip())
+            return ("assign", (var.strip(), int(value.strip())))
         elif line.startswith("if ") and " then" in line:
             condition = line[3:line.index(" then")].strip()
             return ("if", condition)
@@ -35,14 +36,19 @@ class CVInterpreter:
     def run(self, code):
         lines = code.splitlines()
         i = 0
+        skip_else = False
         while i < len(lines):
             line = lines[i]
             parsed_line = self.parse_line(line)
             if parsed_line:
                 cmd, arg = parsed_line
-                if cmd == "if":
+                if cmd == "assign":
+                    var, value = arg
+                    self.variables[var] = value
+                elif cmd == "if":
                     condition = arg
                     if self.evaluate_condition(condition):
+                        skip_else = True
                         i += 1
                         while i < len(lines) and lines[i].strip() not in ["thats all", "otherwise then"]:
                             self.run_line(lines[i])
@@ -50,13 +56,15 @@ class CVInterpreter:
                         while i < len(lines) and lines[i].strip() != "thats all":
                             i += 1
                     else:
-                        while i < len(lines) and lines[i].strip() not in ["otherwise then", "thats all"]:
+                        skip_else = False
+                        while i < len(lines) and lines[i].strip() != "otherwise then" and lines[i].strip() != "thats all":
                             i += 1
                         if i < len(lines) and lines[i].strip() == "otherwise then":
                             i += 1
-                            while i < len(lines) and lines[i].strip() != "thats all":
-                                self.run_line(lines[i])
-                                i += 1
+                            if not skip_else:
+                                while i < len(lines) and lines[i].strip() != "thats all":
+                                    self.run_line(lines[i])
+                                    i += 1
                 elif cmd == "end_if":
                     pass
                 elif cmd == "print":
@@ -69,10 +77,12 @@ class CVInterpreter:
             cmd, arg = parsed_line
             if cmd == "print":
                 print(arg)
+            elif cmd == "assign":
+                var, value = arg
+                self.variables[var] = value
             elif cmd == "if":
                 condition = arg
-                if self.evaluate_condition(condition):
-                    return True
+                return self.evaluate_condition(condition)
             elif cmd == "end_if":
                 return False
         return None
