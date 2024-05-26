@@ -25,10 +25,13 @@ class CVInterpreter:
         return None
 
     def evaluate_condition(self, condition):
-        if "is" in condition and "then" in condition:
-            var, value = condition.split(" is ")[0], condition.split("then")[0]
-            return self.variables.get(var.strip()) == int(value.strip())
-        return False
+    if " is " in condition:
+        var, value = condition.split(" is ")
+        var = var.strip()
+        value = int(value.strip())
+        if var in self.variables:
+            return self.variables[var] == value
+    return False
 
     def run(self, code):
         lines = code.splitlines()
