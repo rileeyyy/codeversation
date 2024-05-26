@@ -26,3 +26,6 @@ then in your terminal or whatever type
 
 have fun!!!  
 note: theres example code in the repository yay  
+
+dont republish modifications without permission from me thanks  
+(C) 2024 rileeyyy
