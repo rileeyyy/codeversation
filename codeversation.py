@@ -25,11 +25,9 @@ class CVInterpreter:
         return None
 
     def evaluate_condition(self, condition):
-        match = re.match(r"([a-zA-Z_]\w*) is (\d+)", condition)
-        if match:
-            var = match.group(1)
-            value = int(match.group(2))
-            return self.variables.get(var) == value
+        if "is" in condition and "then" in condition:
+            var, value = condition.split(" is ")[0], condition.split("then")[0]
+            return self.variables.get(var.strip()) == int(value.strip())
         return False
 
     def run(self, code):
@@ -46,19 +44,21 @@ class CVInterpreter:
                         i += 1
                         while i < len(lines) and lines[i].strip() != "thats all":
                             if lines[i].strip() == "otherwise then":
+                                # Skip the else block
+                                while i < len(lines) and lines[i].strip() != "thats all":
+                                    i += 1
                                 break
                             self.run_line(lines[i])
                             i += 1
                     else:
-                        i += 1
-                        while i < len(lines) and lines[i].strip() != "thats all":
-                            if lines[i].strip() == "otherwise then":
-                                i += 1
-                                while i < len(lines) and lines[i].strip() != "thats all":
-                                    self.run_line(lines[i])
-                                    i += 1
-                                break
+                        # Skip the if block
+                        while i < len(lines) and lines[i].strip() != "otherwise then":
                             i += 1
+                        if i < len(lines) and lines[i].strip() == "otherwise then":
+                            i += 1
+                            while i < len(lines) and lines[i].strip() != "thats all":
+                                self.run_line(lines[i])
+                                i += 1
                 elif cmd == "print":
                     print(arg)
             i += 1
@@ -83,5 +83,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-                
