@@ -11,6 +11,9 @@ class CVInterpreter:
         if re.match(r"^[a-zA-Z_]\w* is \d+$", line):
             var, value = line.split(" is ")
             self.variables[var.strip()] = int(value.strip())
+        elif re.match(r'^[a-zA-Z_]\w* is ".*"$', line):
+            var, value = line.split(" is ")
+            self.variables[var.strip()] = value.strip().strip('"')
         elif line.startswith("if ") and " then" in line:
             condition = line[3:line.index(" then")].strip()
             return ("if", condition)
@@ -23,14 +26,22 @@ class CVInterpreter:
             if match:
                 message = match.group(1)
                 return ("print", message)
+            match = re.match(r'can you say ([a-zA-Z_]\w*)\?', line)
+            if match:
+                var = match.group(1)
+                return ("print_var", var)
         return None
 
     def evaluate_condition(self, condition):
         if " is " in condition:
             var, value = condition.split(" is ")
             var = var.strip()
-            value = int(value.strip())
-            return self.variables.get(var) == value
+            value = value.strip().strip('"')
+            if var in self.variables:
+                if isinstance(self.variables[var], int):
+                    return self.variables[var] == int(value)
+                elif isinstance(self.variables[var], str):
+                    return self.variables[var] == value
         return False
 
     def run(self, code):
@@ -73,6 +84,9 @@ class CVInterpreter:
                             i += 1
                 elif cmd == "print":
                     print(arg)
+                elif cmd == "print_var":
+                    if arg in self.variables:
+                        print(self.variables[arg])
             i += 1
 
     def run_line(self, line):
@@ -81,10 +95,13 @@ class CVInterpreter:
             cmd, arg = parsed_line
             if cmd == "print":
                 print(arg)
+            elif cmd == "print_var":
+                if arg in self.variables:
+                    print(self.variables[arg])
 
 def main():
-    parser = argparse.ArgumentParser(description='run codeversation (CV) code.')
-    parser.add_argument('filename', type=str, help='the filename of the CV code to run')
+    parser = argparse.ArgumentParser(description='Run CodeVersation (CV) code.')
+    parser.add_argument('filename', type=str, help='The filename of the CV code to run')
     args = parser.parse_args()
 
     with open(args.filename, 'r') as file:
@@ -95,3 +112,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+ 
