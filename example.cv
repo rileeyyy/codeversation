@@ -1,4 +1,7 @@
 a is 2
+can you say a?
+b is "hi"
+can you say b?
 if a is 2 then
     can you say "hi"?
     thats all
