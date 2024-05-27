@@ -4,19 +4,8 @@
 a programming language that looks like a.. conversation
 
 # syntax!!
-declare variables using  
-```[variable] is [value]```  
-if and else statments!!  
-```
-if [variable] is [value] then  
-   do stuff
-   thats all
-otherwise then
-   do stuff
-   thats all
-```
-printing to the console!!  
-```can you say "[whatever]"?```
+
+moved to [here](https://rileeyyy.github.io/cv/documentation.html)
 
 # how to run the code
 make sure you have python installed (oh boy)  
