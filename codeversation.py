@@ -32,17 +32,15 @@ class CVInterpreter:
                 return ("print_var", var)
         return None
 
-    def evaluate_condition(self, condition):
-        if " is " in condition:
-            var, value = condition.split(" is ")
-            var = var.strip()
-            value = value.strip().strip('"')
-            if var in self.variables:
-                if isinstance(self.variables[var], int):
-                    return self.variables[var] == int(value)
-                elif isinstance(self.variables[var], str):
-                    return self.variables[var] == value
-        return False
+  def evaluate_condition(self, condition):
+      if " is " in condition:
+          var, value = condition.split(" is ")
+          var = var.strip()
+          value = value.strip()
+          if var in self.variables and isinstance(self.variables[var], int):
+             return self.variables[var] == int(value)
+      return False
+
 
     def run(self, code):
         lines = code.splitlines()
